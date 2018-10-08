@@ -13,4 +13,16 @@ class Oystercard
     @balance += val
   end
 
+  def deduct(fare)
+    @balance -= fare
+  end
+
+  def in_journey?
+    @status
+  end
+
+  def touch_in
+    @status = true
+  end
+
 end
