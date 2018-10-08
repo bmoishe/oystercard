@@ -4,14 +4,12 @@ describe Oystercard do
   it "should have a balance of 0" do
     expect(subject.balance).to eq(0)
   end
+  describe "#top_up" do
 
-  it "can be topped up" do
-    expect(subject).to respond_to(:top_up).with(1).argument
-  end
+    it { is_expected.to respond_to(:top_up).with(1).argument }
 
-  it "increases the balance of a card" do
-    card = Oystercard.new
-    card.top_up(20)
-    expect(card.balance).to eq 20
+    it "increases the balance of a card" do
+    expect{ subject.top_up(20) }.to change{ subject.balance }.by 20
+    end
   end
 end
