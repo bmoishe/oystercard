@@ -31,7 +31,6 @@ class Oystercard
   end
 
   def touch_out(journey)
-    puts @in_journey
     raise "You have no balance: Top up before using" if(@balance==0)
     raise "Journey not initiated" unless(!@in_journey)
     deduct(journey)
