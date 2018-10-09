@@ -27,12 +27,14 @@ class Oystercard
 
   def touch_in
     raise "You have no balance: Top up before using" if(@balance==0)
+    raise "Journey already initiated" unless(!@in_journey)
     @in_journey = true
   end
 
   def touch_out(journey)
     raise "You have no balance: Top up before using" if(@balance==0)
     raise "Journey not initiated" unless(!@in_journey)
+    @in_journey = false
     deduct(journey)
   end
 

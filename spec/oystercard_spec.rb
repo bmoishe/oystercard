@@ -1,17 +1,5 @@
 require './lib/oystercard.rb'
 describe Oystercard do
-  # let (:oyster) {double :Oystercard, :activate_card => true,
-  #   :balance => 0 }
-  # #it 'Activate card' do
-  #   #allow(oyster).to receive(:activate_card) { 0 }
-  #   #expect(oyster.activate_card).to eq 0
-  # it 'Add money' do
-  #   expect(oyster.balance).to eq :balance + add_money
-  # end
-  #before(:each) do
-
-  #end
-
   it 'Check balance' do
     expect(subject.balance).to eq 0
   end
@@ -67,8 +55,7 @@ describe Oystercard do
     journey = 5
     s = Oystercard.new
     s.top_up(10)
-    subject.touch_in
+    s.touch_in
     expect{s.touch_in}.to raise_error "Journey already initiated" unless(s.in_journey)
   end
-
 end
