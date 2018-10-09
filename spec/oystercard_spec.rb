@@ -40,4 +40,35 @@ describe Oystercard do
     expect{ subject.deduct(ded_amt)}.to raise_error("Cannot deduct #{ded_amt} from #{subject.balance} due to in-sufficient balance")
   end
 
+  it "Throws an error if touch_in is performed without balance" do
+    expect{subject.touch_in}.to raise_error("You have no balance: Top up before using") if(subject.balance == 0)
+  end
+
+  it "Throws an error if touch_out is performed without balance" do
+    journey = 5
+    expect{subject.touch_out(5)}.to raise_error("You have no balance: Top up before using") if(subject.balance == 0)
+  end
+
+  it "Balance must change after a trip" do
+    journey = 5
+    subject.top_up(10)
+    expect{subject.touch_out(journey)}.to change{subject.balance}.by -(subject.balance-journey)
+  end
+
+  it "Cannot perfom a touch out without making a journey" do
+    journey = 5
+    s = Oystercard.new
+    s.top_up(10)
+    #subject.touch_in
+    expect{s.touch_out(5)}.to raise_error "Journey not initiated" unless(!s.in_journey)
+  end
+
+  it "Cannot perfom a touch in twice" do
+    journey = 5
+    s = Oystercard.new
+    s.top_up(10)
+    subject.touch_in
+    expect{s.touch_in}.to raise_error "Journey already initiated" unless(s.in_journey)
+  end
+
 end
