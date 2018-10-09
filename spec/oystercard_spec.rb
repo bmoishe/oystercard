@@ -1,5 +1,7 @@
 require './lib/oystercard.rb'
 describe Oystercard do
+  let(:stat) {double :Station, :get_station => "London"}
+
   it 'Check balance' do
     expect(subject.balance).to eq 0
   end
@@ -57,5 +59,12 @@ describe Oystercard do
     s.top_up(10)
     s.touch_in
     expect{s.touch_in}.to raise_error "Journey already initiated" unless(s.in_journey)
+  end
+
+  it 'Display location when touch in is initiated' do
+    s = Oystercard.new
+    s.top_up(10)
+    s.entry_location = stat.get_station
+    expect(s.touch_in).to eq("London")
   end
 end
