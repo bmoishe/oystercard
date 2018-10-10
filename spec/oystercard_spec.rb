@@ -9,7 +9,7 @@ end
 
 
 describe Oystercard do
-  let(:station) { double :station }
+  let(:station) { double :station}
   #before(:each) {skip("Awaiting code refactor.") }
   before(:each) { subject.top_up(10) }
 
@@ -73,12 +73,21 @@ describe Oystercard do
   it "should show all of the journeys" do
     day_out = [{ "Entry" => "Bank", "Exit" => "Stratford" }, { "Entry" => "Stratford",
       "Exit"=>"Bank" }]
-
-
     subject.touch_in("Bank")
     subject.touch_out("Stratford")
     subject.touch_in("Stratford")
     subject.touch_out("Bank")
     expect(subject.journey_list).to eq day_out
   end
+
+  it "should return a zone when touch in performed" do
+    allow(station).to receive(:get_zone).with("Bank") {"Zone 1"}
+    subject.touch_in("Bank")
+    expect(subject.station_zone).to eq station.get_zone("Bank")
+  end
+
+  it "Expects to return a zone for a requested station" do
+    expect(subject.lookup_zone("Bank")).to eq("Zone 1")
+  end
+
 end
