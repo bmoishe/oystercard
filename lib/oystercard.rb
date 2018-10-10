@@ -4,12 +4,15 @@ class Oystercard
   MIN_BALANCE = 1
   MIN_CHARGE = 1
 
-  attr_reader :balance, :status, :starting_station
-  
+  attr_reader :balance, :status, :starting_station, :exit_station, :journey, :journey_list
+
   def initialize
     @balance = 0
     @status = false
     @starting_station = nil
+    @exit_station = nil
+    @journey = Hash.new
+    @journey_list = []
   end
 
   def top_up(value)
@@ -21,12 +24,18 @@ class Oystercard
     fail "Balance below #{MIN_BALANCE}" if self.check_balance < MIN_BALANCE
     @status = true
     @starting_station = name
+    @journey = Hash.new
+    @journey["Entry"] = name
+    @exit_station = nil
   end
 
-  def touch_out
+  def touch_out(name)
     pay(MIN_CHARGE)
     @status = false
     @starting_station = nil
+    @exit_station = name
+    @journey["Exit"] = name
+    @journey_list.push @journey
   end
 
   def journey?

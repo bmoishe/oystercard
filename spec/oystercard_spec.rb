@@ -28,7 +28,7 @@ describe Oystercard do
 
   it 'should change status when touched out at end of journey' do
     subject.touch_in(station)
-    expect{ subject.touch_out }.to change{ subject.status }.to eq false
+    expect{ subject.touch_out(station) }.to change{ subject.status }.to eq false
   end
 
   it 'should report being in a journey or not' do
@@ -43,7 +43,7 @@ describe Oystercard do
 
   it "should deduct a fare at the end of a journey" do
     minimum_charge = Oystercard::MIN_CHARGE
-    expect{ subject.touch_out }.to change{ subject.balance }.by(- minimum_charge)
+    expect{ subject.touch_out(station) }.to change{ subject.balance }.by(- minimum_charge)
   end
 
   it 'should report starting station after touch_in' do
@@ -53,8 +53,31 @@ describe Oystercard do
 
   it 'should forget starting station on touch out, setting it to nil.' do
     subject.touch_in(station)
-    subject.touch_out
+    subject.touch_out(station)
     expect(subject.starting_station).to eq nil
   end
 
+  it "should report the exit station" do
+    subject.touch_out(station)
+    expect(subject.exit_station).to eq station
+  end
+
+  it "should show the most recent journey" do
+    trip = {"Entry"=>"Bank", "Exit"=>"Stratford"}
+
+    subject.touch_in("Bank")
+    subject.touch_out("Stratford")
+    expect(subject.journey).to eq trip
+  end
+
+  it "should show all of the journeys" do
+    day_out = [{"Entry"=>"Bank", "Exit"=>"Stratford"},{"Entry"=>"Stratford", "Exit"=>"Bank"}]
+
+
+    subject.touch_in("Bank")
+    subject.touch_out("Stratford")
+    subject.touch_in("Stratford")
+    subject.touch_out("Bank")
+    expect(subject.journey_list).to eq day_out
+  end
 end
