@@ -1,16 +1,6 @@
 require './lib/oystercard.rb'
 describe Oystercard do
-  # let (:oyster) {double :Oystercard, :activate_card => true,
-  #   :balance => 0 }
-  # #it 'Activate card' do
-  #   #allow(oyster).to receive(:activate_card) { 0 }
-  #   #expect(oyster.activate_card).to eq 0
-  # it 'Add money' do
-  #   expect(oyster.balance).to eq :balance + add_money
-  # end
-  #before(:each) do
-
-  #end
+  let(:stat) {double :Station, :get_station => "London"}
 
   it 'Check balance' do
     expect(subject.balance).to eq 0
@@ -40,4 +30,41 @@ describe Oystercard do
     expect{ subject.deduct(ded_amt)}.to raise_error("Cannot deduct #{ded_amt} from #{subject.balance} due to in-sufficient balance")
   end
 
+  it "Throws an error if touch_in is performed without balance" do
+    expect{subject.touch_in}.to raise_error("You have no balance: Top up before using") if(subject.balance == 0)
+  end
+
+  it "Throws an error if touch_out is performed without balance" do
+    journey = 5
+    expect{subject.touch_out(5)}.to raise_error("You have no balance: Top up before using") if(subject.balance == 0)
+  end
+
+  it "Balance must change after a trip" do
+    journey = 5
+    subject.top_up(10)
+    expect{subject.touch_out(journey)}.to change{subject.balance}.by -(subject.balance-journey)
+  end
+
+  it "Cannot perfom a touch out without making a journey" do
+    journey = 5
+    s = Oystercard.new
+    s.top_up(10)
+    #subject.touch_in
+    expect{s.touch_out(5)}.to raise_error "Journey not initiated" unless(!s.in_journey)
+  end
+
+  it "Cannot perfom a touch in twice" do
+    journey = 5
+    s = Oystercard.new
+    s.top_up(10)
+    s.touch_in
+    expect{s.touch_in}.to raise_error "Journey already initiated" unless(s.in_journey)
+  end
+
+  it 'Display location when touch in is initiated' do
+    s = Oystercard.new
+    s.top_up(10)
+    s.entry_location = stat.get_station
+    expect(s.touch_in).to eq("London")
+  end
 end
