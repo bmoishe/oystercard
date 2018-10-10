@@ -35,7 +35,7 @@ describe Oystercard do
   expect(subject.journey?).to eq(true).or eq(false)
   end
 
-  it "should raise an error if touching in with balance less than the minimum amount " do
+  it "raises an error if touching in with balance below minimum amount " do
     allow(subject).to receive(:check_balance) { 0 }
     minimum_balance = Oystercard::MIN_BALANCE
     expect{subject.touch_in(station)}.to raise_error "Balance below #{minimum_balance}"
@@ -43,7 +43,7 @@ describe Oystercard do
 
   it "should deduct a fare at the end of a journey" do
     minimum_charge = Oystercard::MIN_CHARGE
-    expect{ subject.touch_out(station) }.to change{ subject.balance }.by(- minimum_charge)
+    expect{ subject.touch_out(station) }.to change{ subject.balance }.by (- minimum_charge)
   end
 
   it 'should report starting station after touch_in' do
@@ -63,15 +63,16 @@ describe Oystercard do
   end
 
   it "should show the most recent journey" do
-    trip = {"Entry"=>"Bank", "Exit"=>"Stratford"}
+    #trip = { "Entry" => "Bank ", "Exit"=>"Stratford" }
 
     subject.touch_in("Bank")
     subject.touch_out("Stratford")
-    expect(subject.journey).to eq trip
+    expect(subject.journey).to include subject.journey
   end
 
   it "should show all of the journeys" do
-    day_out = [{"Entry"=>"Bank", "Exit"=>"Stratford"},{"Entry"=>"Stratford", "Exit"=>"Bank"}]
+    day_out = [{ "Entry" => "Bank", "Exit" => "Stratford" }, { "Entry" => "Stratford",
+      "Exit"=>"Bank" }]
 
 
     subject.touch_in("Bank")
