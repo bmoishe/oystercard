@@ -1,4 +1,4 @@
-require 'station'
+require './lib/station'
 
 class Oystercard
   attr_reader :balance
@@ -25,12 +25,6 @@ class Oystercard
     @balance
   end
 
-  def deduct(money)
-    raise "Cannot deduct #{money} from #{@balance} due to in-sufficient balance" if(money > @balance)
-    @balance -= money
-    balance
-  end
-
   def touch_in
     raise "You have no balance: Top up before using" if(@balance==0)
     raise "Journey already initiated" unless(!@in_journey)
@@ -45,4 +39,11 @@ class Oystercard
     deduct(journey)
   end
 
+  private
+
+  def deduct(money)
+    raise "Cannot deduct #{money} from #{@balance} due to in-sufficient balance" if(money > @balance)
+    @balance -= money
+    balance
+  end
 end

@@ -49,7 +49,6 @@ describe Oystercard do
     journey = 5
     s = Oystercard.new
     s.top_up(10)
-    #subject.touch_in
     expect{s.touch_out(5)}.to raise_error "Journey not initiated" unless(!s.in_journey)
   end
 
